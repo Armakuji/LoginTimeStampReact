@@ -1,51 +1,66 @@
 var express = require('express');
 var app = express.Router();
 
-const f = require('util').format;
-
-const user = encodeURIComponent('Armakuji'); // 
-const password = encodeURIComponent('arm0853910817'); //
-var dbName = "register" // 
-
-var MongoClient = require('mongodb').MongoClient;
-// moogose 
-const dbUrl = f("mongodb://%s:%s@ds255463.mlab.com:55463/%s", user, password, dbName);
-
-var ObjectID = require('mongodb').ObjectID;
+// moogose
+const mongoose = require('mongoose');
+let dbUrl = 'mongodb://Armakuji:arm0853910817@ds255463.mlab.com:55463/register';
+let UserSchema = mongoose.Schema({
+    userName: String,
+    password: String,
+  });
 
 
-app.get('/user', function (req, res) {
-    MongoClient.connect(dbUrl, function(err, client) {
-		const db = client.db(dbName).collection('user').find({}).toArray(function (err, result) {
-			client.close();
-			if (err) res.send(err);
-			res.status(200);
-			res.send(result);
-		});
-	});
-});
+mongoose.connect(dbUrl);
+let db = mongoose.connection
+let user = mongoose.model('user', UserSchema);
+// let time = mongoose.model('check',checkSchema);
+var d = new Date()
 
-app.post('/Login', function (req, res) {
-    MongoClient.connect(dbUrl, function(err, client) {
-		const db = client.db(dbName).collection('user').find({userName: req.body.userName , password:req.body.password}).toArray(function (err, result) {
-			client.close();
-			if (err) res.send(err);
-			res.status(200);
-			res.send(result);
-		});
-	});
-});
-
-app.post('/Register', function (req, res) {
-	MongoClient.connect(dbUrl, function(err, client) {
-		const db = client.db(dbName).collection('user').insertOne(req.body, function (err, result) {
-			client.close();
-			if (err) res.send(err);
-			res.status(200);
-			res.send("Insert Success");
-		});
-	});
+app.get('/',(req,res) => {
+    res.send("Hello world")
 })
+
+app.post('/Register',(req,res) => {
+        
+                let insert1 = new user({
+                    userName: req.body.userName,
+                    password: req.body.password
+				});
+                user.insertMany(insert1).then(() =>{
+
+				})
+				
+				return res.status(200).json({
+                    message: "Ok",
+                    success: true
+                });
+
+})
+
+app.post('/login',(req,res) => {
+    user.find({ userName: req.body.userName,password: req.body.password}).exec().then(doc =>{
+        if (doc.length <1 ){
+            return res.status(409).json({
+                message: "Wrong",
+                success: false
+            }); 
+        }else{
+            // console.log(d)
+            // let insert2 = new time({
+            //     email: req.body.userName,
+            //     time: d
+            // });
+            // time.insertMany(insert2).then(() => {
+
+            // })
+            return res.status(200).json({
+                message: req.body.email,
+                success: true
+            });
+        }
+    })
+})
+
 
 
 module.exports = app;

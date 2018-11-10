@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import 'bulma/css/bulma.css'
 import axios from 'axios'
 import { Link } from "react-router-dom";
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 
 
 class Login extends Component {
@@ -13,16 +14,6 @@ class Login extends Component {
             userName: '',
             password: ''
         }
-    }
-
-    componentDidMount() {
-        this.getData()
-
-    }
-
-    getData() {
-        axios.get('http://localhost:3000/user')
-            .then((res) => { console.log(res) })
     }
 
 
@@ -43,22 +34,23 @@ class Login extends Component {
     }
 
     onClickLogin() {
-        var data ={
+        var data = {
             userName: this.state.userName,
-            password: this.state.password,
-          }
+            password: this.state.password
+        }
 
-            if (this.state.userName !== '' && this.state.password !== ''){
-                axios.post("http://localhost:3000/Login", data).then((res) =>{
-                    alert("Login สำเร็จ")
-                    this.props.history.push(`/Home`)
-                }).catch(err => {
-                    alert("อีเมลนี้ถูกใช้งานแล้วหรือพาสเวิดไม่ตรงกัน")
-                    console.log(err);
-                })
-                }else{
-                  alert("กรุณากรอกข้อมูลให้ครบถ้วน")
-                } 
+        if (this.state.userName !== '' && this.state.password !== '') {
+            axios.post("http://localhost:3000/login", data).then((res) => {
+                console.log(res.data.message)
+                var userName = res.data.message
+                this.props.history.push(`/home/${res.data.message}`, userName)
+            }).catch(err => {
+                alert("กรุณาตรวจสอบข้อมูลให้ถูกต้อง")
+                console.log(err);
+            })
+        } else {
+            alert("กรุณากรอกข้อมูล")
+        }
     }
 
     render() {
@@ -92,15 +84,22 @@ class Login extends Component {
                                 </div>
 
                                 <div className="field">
-                                    
-                                        <button className="button is-primary is-fullwidth"
-                                                onClick={()=>this.onClickLogin()}
-                                        >LOGIN</button>
-                                    
+
+                                    <button className="button is-primary is-fullwidth"
+                                        onClick={() => this.onClickLogin()}
+                                    >LOGIN</button>
+
 
                                 </div>
                                 <div className="field">
-                                    <button className="button is-link is-fullwidth">LOGIN WITH FACEBOOK</button>
+                                    <FacebookLogin
+                                        appId='253039525393926'
+                                        fields="email,id"
+                                        callback={this.responseFacebook}
+                                        render={(renderProps) => (
+                                            <button className='button is-info is-medium is-fullwidth' onClick={renderProps.onClick}>Facebook</button>
+                                        )}
+                                    />
                                 </div>
                             </div>
 

@@ -14,18 +14,6 @@ class Register extends Component {
         }
     }
 
-    componentDidMount() {
-        this.getData()
-
-    }
-
-    getData() {
-        axios.get('http://localhost:3000/user')
-            .then((res) => this.setState({
-                user: res.data
-            }))
-    }
-
     addUsername(userName) {
         console.log(userName.target.value)
         this.setState({
