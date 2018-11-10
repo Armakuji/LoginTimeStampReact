@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import 'bulma/css/bulma.css'
 import axios from 'axios'
-import { Link } from "react-router-dom"
 
 class Register extends Component {
 
@@ -51,15 +50,24 @@ class Register extends Component {
 
     }
 
-    onClickAddButton() {
-        axios.post('http://localhost:3000/user', {
-            username: this.state.userName,
-            password: this.state.password
-        })
-            .then((res) => {
-                console.log(res)
-                this.getData()
-            })
+    onClickRegister() {
+        var data ={
+            userName: this.state.userName,
+            password: this.state.password,
+            password2: this.state.password2
+          }
+
+            if (this.state.userName !== '' && this.state.password !== '' && this.state.password2 !== ''){
+                axios.post("http://localhost:3000/Register", data).then((res) =>{
+                    alert("สมัครสมาชิกสำเร็จ")
+                    this.props.history.push(`/`)
+                }).catch(err => {
+                    alert("อีเมลนี้ถูกใช้งานแล้วหรือพาสเวิดไม่ตรงกัน")
+                    console.log(err);
+                })
+                }else{
+                  alert("กรุณากรอกข้อมูลให้ครบถ้วน")
+                }    
     }
 
     render() {
@@ -92,7 +100,7 @@ class Register extends Component {
                                     />
                                 </div>
 
-                                 <div className="field">
+                                <div className="field">
                                     <input
                                         className="input"
                                         type="text"
@@ -103,17 +111,16 @@ class Register extends Component {
 
                                 <div className="field">
 
-                                <Link to="/Home">
-                                         <button className="button is-primary is-fullwidth">Register</button>
-                                </Link>
-                                    
+
+                                    <button 
+                                            className="button is-primary is-fullwidth" 
+                                            onClick = {() =>this.onClickRegister()}>Register
+                                    </button>
+
                                 </div>
                             </div>
 
                         </div>
-
-
-
 
                     </div>
                 </div>

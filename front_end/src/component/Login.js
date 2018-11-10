@@ -42,14 +42,23 @@ class Login extends Component {
 
     }
 
-    onClickCheckUser() {
-        // axios.post('http://localhost:3000/user', {
-        //     userName: this.state.userName
-        // })
-        //     .then((res) => {
-        //         console.log(res)
-        //         this.getData()
-        //     })
+    onClickLogin() {
+        var data ={
+            userName: this.state.userName,
+            password: this.state.password,
+          }
+
+            if (this.state.userName !== '' && this.state.password !== ''){
+                axios.post("http://localhost:3000/Login", data).then((res) =>{
+                    alert("Login สำเร็จ")
+                    this.props.history.push(`/Home`)
+                }).catch(err => {
+                    alert("อีเมลนี้ถูกใช้งานแล้วหรือพาสเวิดไม่ตรงกัน")
+                    console.log(err);
+                })
+                }else{
+                  alert("กรุณากรอกข้อมูลให้ครบถ้วน")
+                } 
     }
 
     render() {
@@ -83,9 +92,11 @@ class Login extends Component {
                                 </div>
 
                                 <div className="field">
-                                    <Link to="/Home">
-                                        <button className="button is-primary is-fullwidth">LOGIN</button>
-                                    </Link>
+                                    
+                                        <button className="button is-primary is-fullwidth"
+                                                onClick={()=>this.onClickLogin()}
+                                        >LOGIN</button>
+                                    
 
                                 </div>
                                 <div className="field">
