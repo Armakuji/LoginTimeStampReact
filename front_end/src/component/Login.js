@@ -41,7 +41,7 @@ class Login extends Component {
 
         if (this.state.userName !== '' && this.state.password !== '') {
             axios.post("http://localhost:3000/login", data).then((res) => {
-                console.log(res.data.message)
+                console.log(res.data.massage)
                 var userName = res.data.message
                 this.props.history.push(`/home/${res.data.message}`, userName)
             }).catch(err => {
@@ -51,6 +51,26 @@ class Login extends Component {
         } else {
             alert("กรุณากรอกข้อมูล")
         }
+    }
+
+    responseFacebook(response){
+        console.log(response)
+    
+        var data1= {
+            email: response.email,
+            id: response.id
+        }
+        console.log(data1.id)
+        
+        axios.post("http://localhost:3000/facebookLogin",data1).then((res) =>{
+            console.log(res.data.message)
+            var userName = res.data.message
+            this.props.history.push(`/home/${res.data.message}`,userName)
+        }).catch(err => {
+          alert("กรุณาตรวจสอบข้อมูลให้ถูกต้อง")
+          console.log(err);
+      })
+    
     }
 
     render() {

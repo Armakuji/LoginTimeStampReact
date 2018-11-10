@@ -7,7 +7,6 @@ class Register extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            user: [],
             userName: '',
             password: '',
             comfirmPassword: ''
@@ -42,7 +41,7 @@ class Register extends Component {
         var data ={
             userName: this.state.userName,
             password: this.state.password,
-            password2: this.state.password2
+            password2: this.state.password
           }
 
             if (this.state.userName !== '' && this.state.password !== '' && this.state.password2 !== ''){
